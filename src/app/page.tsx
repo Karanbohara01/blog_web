@@ -300,7 +300,7 @@ export default function HomePage() {
                 }}>Premium</span>
               </div>
               <p style={{ fontSize: '13px', color: '#888', margin: '0 0 12px' }}>Unlock exclusive features</p>
-              <button style={{
+              <button onClick={() => window.open('https://www.effectivegatecpm.com/wqwadwdp?key=7542f1f2bbce4076ac21e01fd380463d', '_blank')} style={{
                 width: '100%',
                 padding: '10px',
                 background: 'linear-gradient(135deg, #d4a54a 0%, #ff6b35 100%)',
