@@ -6,6 +6,7 @@ import Link from 'next/link';
 import StoryCard from '@/components/story/StoryCard';
 import { Search, User, FileText, Loader2, Sparkles, TrendingUp, Users } from 'lucide-react';
 import { useResponsive } from '@/hooks/useResponsive';
+import AdBanner from '@/components/ads/AdBanner';
 
 interface UserResult {
     _id: string;
@@ -279,6 +280,7 @@ function SearchPageContent() {
             <div style={headerStyle}>
                 <h1 style={titleStyle}>Discover Stories</h1>
                 <p style={subtitleStyle}>Search for amazing stories, creators, and trending topics</p>
+                <AdBanner />
             </div>
 
             {/* Search Form */}
@@ -507,6 +509,7 @@ function SearchPageContent() {
                     )}
                 </div>
             )}
+            <AdBanner />
         </div>
     );
 }

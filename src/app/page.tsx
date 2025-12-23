@@ -6,6 +6,7 @@ import Link from 'next/link';
 import StoryCard from '@/components/story/StoryCard';
 import { Loader2, PenSquare, TrendingUp, Users, Flame, Crown } from 'lucide-react';
 import { useResponsive } from '@/hooks/useResponsive';
+import AdBanner from '@/components/ads/AdBanner';
 
 interface Story {
   _id: string;
@@ -96,6 +97,7 @@ export default function HomePage() {
       margin: '0 auto',
       padding: isMobile ? '16px' : '24px'
     }}>
+      <AdBanner />
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }} className="lg:!grid-cols-[2fr_1fr]">
         {/* Main Feed */}
         <div>
@@ -325,6 +327,7 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+      <AdBanner />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { Heart, MessageCircle, Share2, Bookmark, ArrowLeft, Send, Loader2, ThumbsUp } from 'lucide-react';
 import { useResponsive } from '@/hooks/useResponsive';
+import AdBanner from '@/components/ads/AdBanner';
 
 interface Story {
     _id: string;
@@ -203,6 +204,8 @@ export default function StoryPage() {
                 Back to Feed
             </Link>
 
+            <AdBanner />
+
             {/* Story Card */}
             <article style={{ ...cardStyle, marginBottom: '24px' }}>
                 {/* Author Header */}
@@ -295,7 +298,7 @@ export default function StoryPage() {
                     </button>
                 </div>
             </article>
-
+            <AdBanner />
             {/* Comments Section */}
             <div style={cardStyle}>
                 <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', marginBottom: '20px' }}>

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import StoryCard from '@/components/story/StoryCard';
 import { Loader2, Calendar, Settings, UserPlus, UserMinus, MessageCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import AdBanner from '@/components/ads/AdBanner';
 
 interface UserProfile {
     _id: string;
@@ -271,6 +272,8 @@ export default function ProfilePage() {
                 </div>
             </div>
 
+            <AdBanner />
+
             {/* Tabs */}
             <div style={{ borderBottom: '1px solid #222', padding: '0 24px', marginTop: '24px' }}>
                 <div style={{ display: 'flex', gap: '32px' }}>
@@ -349,6 +352,7 @@ export default function ProfilePage() {
                     </div>
                 )}
             </div>
+            <AdBanner />
         </div>
     );
 }
