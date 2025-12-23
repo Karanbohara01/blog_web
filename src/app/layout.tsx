@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Stories - Share Your World",
   description: "A premium social platform for sharing stories, connecting with others, and building meaningful relationships.",
   keywords: ["stories", "social", "blog", "share", "community"],
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://blog-web-five-rose.vercel.app'),
 };
 
 export default function RootLayout({
