@@ -256,39 +256,35 @@ export default function StoryPage() {
                 {/* Content */}
                 {(() => {
                     const paragraphs = story.content.split('\n');
-                    // Inject ad after 4 paragraphs if story is long enough (approx > 6 paragraphs)
-                    // This approximates "30 lines" or a good reading break
-                    if (paragraphs.length > 6) {
-                        const part1 = paragraphs.slice(0, 4).join('\n');
-                        const part2 = paragraphs.slice(4).join('\n');
-                        const pStyle = {
-                            fontSize: isMobile ? '15px' : '16px',
-                            lineHeight: '1.7',
-                            color: '#e0e0e0',
-                            whiteSpace: 'pre-wrap' as const,
-                            marginBottom: '20px'
-                        };
+                    const elements = [];
+                    let chunk = [];
 
-                        return (
-                            <>
-                                <p style={pStyle}>{part1}</p>
-                                <AdBanner />
-                                <p style={pStyle}>{part2}</p>
-                            </>
-                        );
+                    for (let i = 0; i < paragraphs.length; i++) {
+                        chunk.push(paragraphs[i]);
+
+                        // Every 4 paragraphs, or at the end
+                        if ((i + 1) % 4 === 0 || i === paragraphs.length - 1) {
+                            elements.push(
+                                <p key={`text-${i}`} style={{
+                                    fontSize: isMobile ? '15px' : '16px',
+                                    lineHeight: '1.7',
+                                    color: '#e0e0e0',
+                                    whiteSpace: 'pre-wrap',
+                                    marginBottom: '20px'
+                                }}>
+                                    {chunk.join('\n')}
+                                </p>
+                            );
+
+                            // Add ad if it's a 4th paragraph and not the very last one
+                            if ((i + 1) % 4 === 0 && i !== paragraphs.length - 1) {
+                                elements.push(<AdBanner key={`ad-${i}`} />);
+                            }
+                            chunk = [];
+                        }
                     }
 
-                    return (
-                        <p style={{
-                            fontSize: isMobile ? '15px' : '16px',
-                            lineHeight: '1.7',
-                            color: '#e0e0e0',
-                            whiteSpace: 'pre-wrap',
-                            marginBottom: '20px'
-                        }}>
-                            {story.content}
-                        </p>
-                    );
+                    return <>{elements}</>;
                 })()}
 
                 {/* Images */}
