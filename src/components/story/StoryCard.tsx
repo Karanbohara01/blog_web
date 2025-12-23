@@ -260,7 +260,14 @@ export default function StoryCard({ story, onLike, onDelete }: StoryCardProps) {
             {/* Content */}
             <Link href={`/story/${story._id}`} style={{ textDecoration: 'none' }}>
                 <p style={{ color: '#e0e0e0', whiteSpace: 'pre-wrap', marginBottom: '16px', lineHeight: '1.6', fontSize: '15px' }}>
-                    {story.content}
+                    {story.content.length > 200 ? (
+                        <>
+                            {story.content.substring(0, 200)}...
+                            <span style={{ color: '#d4a54a', fontWeight: 600, marginLeft: '6px' }}>Read more</span>
+                        </>
+                    ) : (
+                        story.content
+                    )}
                 </p>
             </Link>
 
