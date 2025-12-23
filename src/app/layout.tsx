@@ -4,6 +4,7 @@ import "./globals.css";
 import AuthProvider from "@/components/providers/AuthProvider";
 import Navbar from "@/components/layout/Navbar";
 import { NotificationProvider } from "@/contexts/SocketContext";
+import SocialBar from "@/components/ads/SocialBar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +29,7 @@ export default function RootLayout({
             <main className="pt-20 min-h-screen">
               {children}
             </main>
+            <SocialBar />
           </NotificationProvider>
         </AuthProvider>
       </body>
