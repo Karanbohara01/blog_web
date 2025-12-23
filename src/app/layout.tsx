@@ -5,6 +5,7 @@ import AuthProvider from "@/components/providers/AuthProvider";
 import Navbar from "@/components/layout/Navbar";
 import { NotificationProvider } from "@/contexts/SocketContext";
 import SocialBar from "@/components/ads/SocialBar";
+import SideAds from "@/components/ads/SideAds";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
         <AuthProvider>
           <NotificationProvider>
             <Navbar />
+            <SideAds />
             <main className="pt-20 min-h-screen">
               {children}
             </main>
