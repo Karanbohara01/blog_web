@@ -253,15 +253,43 @@ export default function StoryPage() {
                 </div>
 
                 {/* Content */}
-                <p style={{
-                    fontSize: isMobile ? '15px' : '16px',
-                    lineHeight: '1.7',
-                    color: '#e0e0e0',
-                    whiteSpace: 'pre-wrap',
-                    marginBottom: '20px'
-                }}>
-                    {story.content}
-                </p>
+                {/* Content */}
+                {(() => {
+                    const paragraphs = story.content.split('\n');
+                    // Inject ad after 4 paragraphs if story is long enough (approx > 6 paragraphs)
+                    // This approximates "30 lines" or a good reading break
+                    if (paragraphs.length > 6) {
+                        const part1 = paragraphs.slice(0, 4).join('\n');
+                        const part2 = paragraphs.slice(4).join('\n');
+                        const pStyle = {
+                            fontSize: isMobile ? '15px' : '16px',
+                            lineHeight: '1.7',
+                            color: '#e0e0e0',
+                            whiteSpace: 'pre-wrap' as const,
+                            marginBottom: '20px'
+                        };
+
+                        return (
+                            <>
+                                <p style={pStyle}>{part1}</p>
+                                <AdBanner />
+                                <p style={pStyle}>{part2}</p>
+                            </>
+                        );
+                    }
+
+                    return (
+                        <p style={{
+                            fontSize: isMobile ? '15px' : '16px',
+                            lineHeight: '1.7',
+                            color: '#e0e0e0',
+                            whiteSpace: 'pre-wrap',
+                            marginBottom: '20px'
+                        }}>
+                            {story.content}
+                        </p>
+                    );
+                })()}
 
                 {/* Images */}
                 {story.images.length > 0 && (
