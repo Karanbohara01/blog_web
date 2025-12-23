@@ -1,0 +1,331 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { formatDistanceToNow } from 'date-fns';
+import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal, Trash2, Edit2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+
+interface StoryCardProps {
+    story: {
+        _id: string;
+        author: {
+            _id: string;
+            name: string;
+            username: string;
+            avatar?: string;
+            isVerified?: boolean;
+        };
+        content: string;
+        images: string[];
+        likesCount: number;
+        commentsCount: number;
+        sharesCount: number;
+        isLiked?: boolean;
+        createdAt: string;
+    };
+    onLike?: (storyId: string) => void;
+    onDelete?: (storyId: string) => void;
+}
+
+export default function StoryCard({ story, onLike, onDelete }: StoryCardProps) {
+    const { data: session } = useSession();
+    const [isLiked, setIsLiked] = useState(story.isLiked || false);
+    const [likesCount, setLikesCount] = useState(story.likesCount);
+    const [showMenu, setShowMenu] = useState(false);
+    const [isLiking, setIsLiking] = useState(false);
+
+    const isAuthor = session?.user?.id === story.author._id;
+
+    const handleLike = async () => {
+        if (isLiking || !session) return;
+
+        setIsLiking(true);
+        setIsLiked(!isLiked);
+        setLikesCount(prev => isLiked ? prev - 1 : prev + 1);
+
+        try {
+            const res = await fetch(`/api/stories/${story._id}/like`, {
+                method: 'POST',
+            });
+
+            if (!res.ok) {
+                setIsLiked(isLiked);
+                setLikesCount(story.likesCount);
+            }
+
+            onLike?.(story._id);
+        } catch (error) {
+            setIsLiked(isLiked);
+            setLikesCount(story.likesCount);
+        } finally {
+            setIsLiking(false);
+        }
+    };
+
+    const handleShare = async () => {
+        const url = `${window.location.origin}/story/${story._id}`;
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: `Story by ${story.author.name}`,
+                    text: story.content.substring(0, 100),
+                    url,
+                });
+            } catch (err) {
+                // User cancelled sharing
+            }
+        } else {
+            await navigator.clipboard.writeText(url);
+            alert('Link copied to clipboard!');
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!confirm('Are you sure you want to delete this story?')) return;
+
+        try {
+            const res = await fetch(`/api/stories/${story._id}`, {
+                method: 'DELETE',
+            });
+
+            if (res.ok) {
+                onDelete?.(story._id);
+            }
+        } catch (error) {
+            console.error('Failed to delete story');
+        }
+    };
+
+    // Card and content styles
+    const cardStyle = {
+        background: '#111',
+        border: '1px solid #222',
+        borderRadius: '16px',
+        padding: '20px',
+    };
+
+    const actionBtnStyle = (active: boolean, color: string) => ({
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        padding: '10px 16px',
+        borderRadius: '10px',
+        background: active ? `${color}15` : 'transparent',
+        border: 'none',
+        color: active ? color : '#666',
+        fontSize: '14px',
+        cursor: 'pointer',
+        transition: 'all 0.2s',
+    });
+
+    return (
+        <article style={cardStyle}>
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <Link href={`/profile/${story.author.username}`} style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
+                    {story.author.avatar ? (
+                        <img
+                            src={story.author.avatar}
+                            alt={story.author.name}
+                            style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #333' }}
+                        />
+                    ) : (
+                        <div style={{
+                            width: '44px',
+                            height: '44px',
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #d4a54a 0%, #ff6b35 100%)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#000',
+                            fontWeight: 600,
+                            fontSize: '18px',
+                        }}>
+                            {story.author.name.charAt(0)}
+                        </div>
+                    )}
+                    <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span style={{ fontWeight: 600, color: '#fff', fontSize: '15px' }}>{story.author.name}</span>
+                            {story.author.isVerified && (
+                                <svg style={{ width: '16px', height: '16px', color: '#d4a54a' }} fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                                </svg>
+                            )}
+                        </div>
+                        <span style={{ fontSize: '13px', color: '#666' }}>
+                            @{story.author.username} · {formatDistanceToNow(new Date(story.createdAt), { addSuffix: true })}
+                        </span>
+                    </div>
+                </Link>
+
+                {/* Menu */}
+                <div style={{ position: 'relative' }}>
+                    <button
+                        onClick={() => setShowMenu(!showMenu)}
+                        style={{
+                            padding: '8px',
+                            borderRadius: '8px',
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#666',
+                        }}
+                    >
+                        <MoreHorizontal style={{ width: '20px', height: '20px' }} />
+                    </button>
+
+                    {showMenu && (
+                        <div style={{
+                            position: 'absolute',
+                            right: 0,
+                            top: '100%',
+                            marginTop: '8px',
+                            width: '180px',
+                            background: '#111',
+                            border: '1px solid #222',
+                            borderRadius: '12px',
+                            padding: '8px 0',
+                            zIndex: 10,
+                        }}>
+                            {isAuthor && (
+                                <>
+                                    <Link
+                                        href={`/story/${story._id}/edit`}
+                                        onClick={() => setShowMenu(false)}
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '12px',
+                                            padding: '10px 16px',
+                                            color: '#ccc',
+                                            textDecoration: 'none',
+                                            fontSize: '14px',
+                                        }}
+                                    >
+                                        <Edit2 style={{ width: '16px', height: '16px' }} />
+                                        Edit Story
+                                    </Link>
+                                    <button
+                                        onClick={handleDelete}
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '12px',
+                                            padding: '10px 16px',
+                                            width: '100%',
+                                            textAlign: 'left',
+                                            color: '#f87171',
+                                            background: 'transparent',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                            fontSize: '14px',
+                                        }}
+                                    >
+                                        <Trash2 style={{ width: '16px', height: '16px' }} />
+                                        Delete Story
+                                    </button>
+                                </>
+                            )}
+                            <button
+                                onClick={() => {
+                                    handleShare();
+                                    setShowMenu(false);
+                                }}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '12px',
+                                    padding: '10px 16px',
+                                    width: '100%',
+                                    textAlign: 'left',
+                                    color: '#ccc',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    fontSize: '14px',
+                                }}
+                            >
+                                <Share2 style={{ width: '16px', height: '16px' }} />
+                                Copy Link
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Content */}
+            <Link href={`/story/${story._id}`} style={{ textDecoration: 'none' }}>
+                <p style={{ color: '#e0e0e0', whiteSpace: 'pre-wrap', marginBottom: '16px', lineHeight: '1.6', fontSize: '15px' }}>
+                    {story.content}
+                </p>
+            </Link>
+
+            {/* Images */}
+            {story.images.length > 0 && (
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: story.images.length === 1 ? '1fr' : 'repeat(2, 1fr)',
+                    gap: '4px',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    marginBottom: '16px',
+                }}>
+                    {story.images.slice(0, 4).map((image, index) => (
+                        <div key={index} style={{ position: 'relative', aspectRatio: story.images.length === 1 ? '16/9' : '1/1' }}>
+                            <img
+                                src={image}
+                                alt={`Story image ${index + 1}`}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                            {index === 3 && story.images.length > 4 && (
+                                <div style={{
+                                    position: 'absolute',
+                                    inset: 0,
+                                    background: 'rgba(0, 0, 0, 0.6)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}>
+                                    <span style={{ fontSize: '24px', fontWeight: 700, color: '#fff' }}>+{story.images.length - 4}</span>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* Actions */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '16px', borderTop: '1px solid #222' }}>
+                <button
+                    onClick={handleLike}
+                    disabled={!session}
+                    style={actionBtnStyle(isLiked, '#f87171')}
+                >
+                    <Heart style={{ width: '18px', height: '18px', fill: isLiked ? '#f87171' : 'transparent' }} />
+                    <span>{likesCount}</span>
+                </button>
+
+                <Link
+                    href={`/story/${story._id}`}
+                    style={{ ...actionBtnStyle(false, '#60a5fa'), textDecoration: 'none' }}
+                >
+                    <MessageCircle style={{ width: '18px', height: '18px' }} />
+                    <span>{story.commentsCount}</span>
+                </Link>
+
+                <button onClick={handleShare} style={actionBtnStyle(false, '#4ade80')}>
+                    <Share2 style={{ width: '18px', height: '18px' }} />
+                    <span>{story.sharesCount}</span>
+                </button>
+
+                <button style={actionBtnStyle(false, '#d4a54a')}>
+                    <Bookmark style={{ width: '18px', height: '18px' }} />
+                </button>
+            </div>
+        </article>
+    );
+}
