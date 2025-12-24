@@ -125,13 +125,6 @@ export async function POST(request: Request) {
             );
         }
 
-        if (content.length > 10000) {
-            return NextResponse.json(
-                { error: 'Story content is too long (max 10000 characters)' },
-                { status: 400 }
-            );
-        }
-
         await dbConnect();
 
         const story = await Story.create({

@@ -126,7 +126,6 @@ export default function CreateStoryForm() {
         }
     };
 
-    const maxLength = 10000;
     const titleMaxLength = 150;
 
     // Shared styles
@@ -197,7 +196,6 @@ export default function CreateStoryForm() {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Tell your story..."
-                    maxLength={maxLength}
                     style={{
                         ...inputStyle,
                         minHeight: '200px',
@@ -215,9 +213,9 @@ export default function CreateStoryForm() {
                 }}>
                     <span style={{
                         fontSize: '13px',
-                        color: content.length > maxLength * 0.9 ? '#ff6b35' : '#555',
+                        color: '#555',
                     }}>
-                        {content.length.toLocaleString()}/{maxLength.toLocaleString()}
+                        {content.length.toLocaleString()} characters
                     </span>
                 </div>
             </div>

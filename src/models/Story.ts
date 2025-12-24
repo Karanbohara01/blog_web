@@ -37,7 +37,6 @@ const StorySchema = new Schema<IStory>(
         content: {
             type: String,
             required: true,
-            maxlength: 10000,
         },
         images: [{
             type: String,
