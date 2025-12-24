@@ -137,7 +137,7 @@ export default function LandingPage() {
     };
 
     return (
-        <div style={{ background: '#0a0a0a', minHeight: '100vh', overflow: 'hidden' }}>
+        <div className="2xl:mx-[200px]" style={{ background: '#0a0a0a', minHeight: '100vh', overflow: 'hidden' }}>
             {/* CSS Keyframes */}
             <style jsx global>{`
                 @keyframes float {
