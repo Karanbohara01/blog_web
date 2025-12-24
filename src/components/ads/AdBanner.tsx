@@ -17,7 +17,7 @@ export default function AdBanner() {
     // Show placeholder in development
     if (isDev) {
         return (
-            <div className="w-full flex justify-center my-8">
+            <div className="w-full flex justify-center my-4">
                 {/* Desktop Placeholder */}
                 <div className="hidden md:flex" style={{
                     width: '728px',
@@ -55,7 +55,7 @@ export default function AdBanner() {
     }
 
     return (
-        <div className="w-full flex justify-center my-8">
+        <div className="w-full flex justify-center my-4">
             {/* Desktop Ad (728x90) - Hidden on mobile */}
             <div className="hidden md:block">
                 <iframe

@@ -161,7 +161,7 @@ export default function BrowsePage() {
                     </Link>
                 </div>
             ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '16px' }}>
                     {stories.map((story, index) => (
                         <div key={story._id}>
                             <StoryCard story={story} />

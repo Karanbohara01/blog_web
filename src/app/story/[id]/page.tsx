@@ -209,7 +209,7 @@ export default function StoryPage() {
             <AdBanner />
 
             {/* Story Card */}
-            <article style={{ ...cardStyle, marginBottom: '24px' }}>
+            <article style={{ ...cardStyle, marginTop: '16px', marginBottom: '24px' }}>
                 {/* Author Header */}
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '20px' }}>
                     <Link href={`/profile/${story.author.username}`}>
@@ -357,7 +357,7 @@ export default function StoryPage() {
             </article>
             <AdBanner />
             {/* Comments Section */}
-            <div style={cardStyle}>
+            <div style={{ ...cardStyle, marginTop: '16px' }}>
                 <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', marginBottom: '20px' }}>
                     Comments ({comments.length})
                 </h2>
