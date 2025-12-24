@@ -137,7 +137,7 @@ export default function LandingPage() {
     };
 
     return (
-        <div className="2xl:mx-[200px]" style={{ background: '#0a0a0a', minHeight: '100vh', overflow: 'hidden' }}>
+        <div className="side-ad-safe" style={{ background: '#0a0a0a', minHeight: '100vh', overflow: 'hidden' }}>
             {/* CSS Keyframes */}
             <style jsx global>{`
                 @keyframes float {
@@ -176,6 +176,13 @@ export default function LandingPage() {
                 }
                 .hover-scale:hover {
                     transform: scale(1.03);
+                }
+                /* Side ads spacing - 200px margin on 2xl screens (1536px+) */
+                @media (min-width: 1536px) {
+                    .side-ad-safe {
+                        margin-left: 200px !important;
+                        margin-right: 200px !important;
+                    }
                 }
             `}</style>
 
