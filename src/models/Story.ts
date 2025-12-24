@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 export interface IStory extends Document {
     _id: mongoose.Types.ObjectId;
     author: mongoose.Types.ObjectId;
+    title: string;
     content: string;
     images: string[];
     likes: mongoose.Types.ObjectId[];
@@ -22,6 +23,12 @@ const StorySchema = new Schema<IStory>(
             ref: 'User',
             required: true,
             index: true,
+        },
+        title: {
+            type: String,
+            required: true,
+            maxlength: 150,
+            trim: true,
         },
         content: {
             type: String,

@@ -7,6 +7,7 @@ import StoryCard from '@/components/story/StoryCard';
 import { Loader2, PenSquare, TrendingUp, Users, Flame, Crown } from 'lucide-react';
 import { useResponsive } from '@/hooks/useResponsive';
 import AdBanner from '@/components/ads/AdBanner';
+import LandingPage from '@/components/landing/LandingPage';
 
 interface Story {
   _id: string;
@@ -89,6 +90,11 @@ export default function HomePage() {
         <Loader2 style={{ width: '24px', height: '24px', color: '#d4a54a', animation: 'spin 1s linear infinite' }} />
       </div>
     );
+  }
+
+  // Show landing page for non-authenticated users
+  if (status === 'unauthenticated') {
+    return <LandingPage />;
   }
 
   return (

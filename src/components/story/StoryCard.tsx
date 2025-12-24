@@ -16,8 +16,10 @@ interface StoryCardProps {
             avatar?: string;
             isVerified?: boolean;
         };
+        title?: string;
         content: string;
         images: string[];
+        tags?: string[];
         likesCount: number;
         commentsCount: number;
         sharesCount: number;
@@ -259,7 +261,43 @@ export default function StoryCard({ story, onLike, onDelete }: StoryCardProps) {
 
             {/* Content */}
             <Link href={`/story/${story._id}`} style={{ textDecoration: 'none' }}>
-                <p style={{ color: '#e0e0e0', whiteSpace: 'pre-wrap', marginBottom: '16px', lineHeight: '1.6', fontSize: '15px' }}>
+                {/* Title */}
+                {story.title && (
+                    <h3 style={{
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#fff',
+                        marginBottom: '8px',
+                        lineHeight: 1.4,
+                    }}>
+                        {story.title}
+                    </h3>
+                )}
+
+                {/* Tags */}
+                {story.tags && story.tags.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+                        {story.tags.slice(0, 5).map((tag, idx) => (
+                            <span key={idx} style={{
+                                padding: '4px 10px',
+                                borderRadius: '12px',
+                                background: 'rgba(212, 165, 74, 0.1)',
+                                color: '#d4a54a',
+                                fontSize: '12px',
+                                fontWeight: 500,
+                            }}>
+                                #{tag}
+                            </span>
+                        ))}
+                        {story.tags.length > 5 && (
+                            <span style={{ color: '#666', fontSize: '12px', alignSelf: 'center' }}>
+                                +{story.tags.length - 5} more
+                            </span>
+                        )}
+                    </div>
+                )}
+
+                <p style={{ color: '#b0b0b0', whiteSpace: 'pre-wrap', marginBottom: '16px', lineHeight: '1.6', fontSize: '15px' }}>
                     {story.content.length > 200 ? (
                         <>
                             {story.content.substring(0, 200)}...

@@ -3,14 +3,17 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { ImagePlus, X, Loader2, Send } from 'lucide-react';
+import { ImagePlus, X, Loader2, Send, Plus } from 'lucide-react';
 import { useResponsive } from '@/hooks/useResponsive';
 
 export default function CreateStoryForm() {
     const { data: session } = useSession();
     const router = useRouter();
+    const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [images, setImages] = useState<string[]>([]);
+    const [tags, setTags] = useState<string[]>([]);
+    const [tagInput, setTagInput] = useState('');
     const [uploading, setUploading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
@@ -63,8 +66,31 @@ export default function CreateStoryForm() {
         setImages(prev => prev.filter((_, i) => i !== index));
     };
 
+    const addTag = () => {
+        const tag = tagInput.trim().toLowerCase();
+        if (tag && !tags.includes(tag) && tags.length < 10) {
+            setTags(prev => [...prev, tag]);
+            setTagInput('');
+        }
+    };
+
+    const handleTagKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            addTag();
+        }
+    };
+
+    const removeTag = (index: number) => {
+        setTags(prev => prev.filter((_, i) => i !== index));
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!title.trim()) {
+            setError('Please add a title for your story');
+            return;
+        }
         if (!content.trim() && images.length === 0) {
             setError('Please add some content or images');
             return;
@@ -78,8 +104,10 @@ export default function CreateStoryForm() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    title: title.trim(),
                     content: content.trim(),
                     images,
+                    tags,
                 }),
             });
 
@@ -99,12 +127,22 @@ export default function CreateStoryForm() {
     };
 
     const maxLength = 10000;
+    const titleMaxLength = 150;
 
     // Shared styles
     const cardStyle = {
         background: '#111',
         border: '1px solid #222',
         borderRadius: '16px',
+    };
+
+    const inputStyle = {
+        width: '100%',
+        background: 'transparent',
+        border: 'none',
+        outline: 'none',
+        color: '#fff',
+        fontSize: '16px',
     };
 
     return (
@@ -123,21 +161,46 @@ export default function CreateStoryForm() {
                 </div>
             )}
 
+            {/* Title Input */}
+            <div style={{ ...cardStyle, padding: '20px', marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '13px', color: '#888', marginBottom: '8px', fontWeight: 500 }}>
+                    Story Title *
+                </label>
+                <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Give your story a captivating title..."
+                    maxLength={titleMaxLength}
+                    style={{
+                        ...inputStyle,
+                        fontSize: '22px',
+                        fontWeight: 600,
+                    }}
+                />
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
+                    <span style={{
+                        fontSize: '12px',
+                        color: title.length > titleMaxLength * 0.9 ? '#ff6b35' : '#555',
+                    }}>
+                        {title.length}/{titleMaxLength}
+                    </span>
+                </div>
+            </div>
+
             {/* Content Textarea */}
-            <div style={{ ...cardStyle, padding: '20px', marginBottom: '24px' }}>
+            <div style={{ ...cardStyle, padding: '20px', marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '13px', color: '#888', marginBottom: '8px', fontWeight: 500 }}>
+                    Story Content *
+                </label>
                 <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Tell your story..."
                     maxLength={maxLength}
                     style={{
-                        width: '100%',
+                        ...inputStyle,
                         minHeight: '200px',
-                        background: 'transparent',
-                        border: 'none',
-                        outline: 'none',
-                        color: '#fff',
-                        fontSize: '16px',
                         lineHeight: '1.6',
                         resize: 'vertical',
                         padding: isMobile ? '8px 0' : '0',
@@ -156,6 +219,78 @@ export default function CreateStoryForm() {
                     }}>
                         {content.length.toLocaleString()}/{maxLength.toLocaleString()}
                     </span>
+                </div>
+            </div>
+
+            {/* Tags Input */}
+            <div style={{ ...cardStyle, padding: '20px', marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '13px', color: '#888', marginBottom: '8px', fontWeight: 500 }}>
+                    Tags (optional)
+                </label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: tags.length > 0 ? '12px' : '0' }}>
+                    {tags.map((tag, index) => (
+                        <span key={index} style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '6px 12px',
+                            background: 'rgba(212, 165, 74, 0.15)',
+                            borderRadius: '20px',
+                            fontSize: '13px',
+                            color: '#d4a54a',
+                        }}>
+                            #{tag}
+                            <button type="button" onClick={() => removeTag(index)} style={{
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                padding: 0,
+                                color: '#d4a54a',
+                                display: 'flex',
+                            }}>
+                                <X style={{ width: '14px', height: '14px' }} />
+                            </button>
+                        </span>
+                    ))}
+                </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <input
+                        type="text"
+                        value={tagInput}
+                        onChange={(e) => setTagInput(e.target.value)}
+                        onKeyDown={handleTagKeyDown}
+                        placeholder="Add a tag (press Enter)"
+                        maxLength={30}
+                        disabled={tags.length >= 10}
+                        style={{
+                            ...inputStyle,
+                            flex: 1,
+                            padding: '8px 0',
+                        }}
+                    />
+                    <button
+                        type="button"
+                        onClick={addTag}
+                        disabled={!tagInput.trim() || tags.length >= 10}
+                        style={{
+                            padding: '8px 16px',
+                            background: tagInput.trim() ? 'rgba(212, 165, 74, 0.2)' : '#222',
+                            border: 'none',
+                            borderRadius: '8px',
+                            color: tagInput.trim() ? '#d4a54a' : '#555',
+                            cursor: tagInput.trim() ? 'pointer' : 'not-allowed',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            fontSize: '14px',
+                        }}
+                    >
+                        <Plus style={{ width: '16px', height: '16px' }} />
+                        Add
+                    </button>
+                </div>
+                <div style={{ fontSize: '12px', color: '#555', marginTop: '8px' }}>
+                    {tags.length}/10 tags • Helps readers discover your story
                 </div>
             </div>
 
@@ -258,19 +393,19 @@ export default function CreateStoryForm() {
             {/* Submit Button */}
             <button
                 type="submit"
-                disabled={submitting || (!content.trim() && images.length === 0)}
+                disabled={submitting || !title.trim() || (!content.trim() && images.length === 0)}
                 style={{
                     width: '100%',
                     padding: '16px 24px',
-                    background: (submitting || (!content.trim() && images.length === 0))
+                    background: (submitting || !title.trim() || (!content.trim() && images.length === 0))
                         ? '#333'
                         : 'linear-gradient(135deg, #d4a54a 0%, #ff6b35 100%)',
-                    color: (submitting || (!content.trim() && images.length === 0)) ? '#666' : '#000',
+                    color: (submitting || !title.trim() || (!content.trim() && images.length === 0)) ? '#666' : '#000',
                     fontSize: '16px',
                     fontWeight: 600,
                     borderRadius: '12px',
                     border: 'none',
-                    cursor: (submitting || (!content.trim() && images.length === 0)) ? 'not-allowed' : 'pointer',
+                    cursor: (submitting || !title.trim() || (!content.trim() && images.length === 0)) ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',

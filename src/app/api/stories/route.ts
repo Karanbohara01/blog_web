@@ -102,7 +102,21 @@ export async function POST(request: Request) {
             );
         }
 
-        const { content, images, tags, isPublic } = await request.json();
+        const { title, content, images, tags, isPublic } = await request.json();
+
+        if (!title || title.trim().length === 0) {
+            return NextResponse.json(
+                { error: 'Story title is required' },
+                { status: 400 }
+            );
+        }
+
+        if (title.length > 150) {
+            return NextResponse.json(
+                { error: 'Story title is too long (max 150 characters)' },
+                { status: 400 }
+            );
+        }
 
         if (!content || content.trim().length === 0) {
             return NextResponse.json(
@@ -122,6 +136,7 @@ export async function POST(request: Request) {
 
         const story = await Story.create({
             author: session.user.id,
+            title: title.trim(),
             content: content.trim(),
             images: images || [],
             tags: tags || [],

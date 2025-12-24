@@ -20,8 +20,10 @@ interface Story {
         bio?: string;
         followersCount: number;
     };
+    title?: string;
     content: string;
     images: string[];
+    tags?: string[];
     likesCount: number;
     commentsCount: number;
     sharesCount: number;
@@ -252,6 +254,37 @@ export default function StoryPage() {
                     </div>
                 </div>
 
+                {/* Title */}
+                {story.title && (
+                    <h1 style={{
+                        fontSize: isMobile ? '24px' : '28px',
+                        fontWeight: 700,
+                        color: '#fff',
+                        marginBottom: '16px',
+                        lineHeight: 1.3,
+                    }}>
+                        {story.title}
+                    </h1>
+                )}
+
+                {/* Tags */}
+                {story.tags && story.tags.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
+                        {story.tags.map((tag, idx) => (
+                            <span key={idx} style={{
+                                padding: '6px 14px',
+                                borderRadius: '16px',
+                                background: 'rgba(212, 165, 74, 0.1)',
+                                color: '#d4a54a',
+                                fontSize: '13px',
+                                fontWeight: 500,
+                            }}>
+                                #{tag}
+                            </span>
+                        ))}
+                    </div>
+                )}
+
                 {/* Content */}
                 {/* Content */}
                 {(() => {
@@ -262,8 +295,8 @@ export default function StoryPage() {
                     for (let i = 0; i < paragraphs.length; i++) {
                         chunk.push(paragraphs[i]);
 
-                        // Every 4 paragraphs, or at the end
-                        if ((i + 1) % 4 === 0 || i === paragraphs.length - 1) {
+                        // Every 20 paragraphs, or at the end
+                        if ((i + 1) % 20 === 0 || i === paragraphs.length - 1) {
                             elements.push(
                                 <p key={`text-${i}`} style={{
                                     fontSize: isMobile ? '15px' : '16px',
@@ -276,8 +309,8 @@ export default function StoryPage() {
                                 </p>
                             );
 
-                            // Add ad if it's a 4th paragraph and not the very last one
-                            if ((i + 1) % 4 === 0 && i !== paragraphs.length - 1) {
+                            // Add ad if it's a 20th paragraph and not the very last one
+                            if ((i + 1) % 20 === 0 && i !== paragraphs.length - 1) {
                                 elements.push(<AdBanner key={`ad-${i}`} />);
                             }
                             chunk = [];
