@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 export default function AdBanner() {
     const [mounted, setMounted] = useState(false);
+    const isDev = process.env.NODE_ENV === 'development';
 
     useEffect(() => {
         setMounted(true);
@@ -11,6 +12,46 @@ export default function AdBanner() {
 
     if (!mounted) {
         return null;
+    }
+
+    // Show placeholder in development
+    if (isDev) {
+        return (
+            <div className="w-full flex justify-center my-8">
+                {/* Desktop Placeholder */}
+                <div className="hidden md:flex" style={{
+                    width: '728px',
+                    height: '90px',
+                    background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+                    border: '1px dashed #333',
+                    borderRadius: '8px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#555',
+                    fontSize: '14px',
+                }}>
+                    📢 Ad Banner (728x90) - Shows on Production
+                </div>
+
+                {/* Mobile Placeholder */}
+                <div className="flex md:hidden w-full px-4">
+                    <div style={{
+                        width: '100%',
+                        height: '250px',
+                        background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+                        border: '1px dashed #333',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#555',
+                        fontSize: '14px',
+                    }}>
+                        📢 Native Ad - Shows on Production
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -31,7 +72,7 @@ export default function AdBanner() {
                 <iframe
                     src="/ads/native_banner.html"
                     width="100%"
-                    height="300" // Adjustable height for 1:4 layout
+                    height="300"
                     style={{ border: 'none', overflow: 'hidden', minHeight: '300px' }}
                     title="Advertisement"
                 />
