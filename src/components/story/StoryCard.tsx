@@ -24,6 +24,7 @@ interface StoryCardProps {
         commentsCount: number;
         sharesCount: number;
         isLiked?: boolean;
+        isBookmarked?: boolean;
         createdAt: string;
     };
     onLike?: (storyId: string) => void;
@@ -34,10 +35,35 @@ export default function StoryCard({ story, onLike, onDelete }: StoryCardProps) {
     const { data: session } = useSession();
     const [isLiked, setIsLiked] = useState(story.isLiked || false);
     const [likesCount, setLikesCount] = useState(story.likesCount);
+    const [isBookmarked, setIsBookmarked] = useState(story.isBookmarked || false);
     const [showMenu, setShowMenu] = useState(false);
     const [isLiking, setIsLiking] = useState(false);
+    const [isBookmarking, setIsBookmarking] = useState(false);
 
     const isAuthor = session?.user?.id === story.author._id;
+
+    const handleBookmark = async () => {
+        if (isBookmarking || !session) return;
+
+        setIsBookmarking(true);
+        setIsBookmarked(!isBookmarked);
+
+        try {
+            const res = await fetch('/api/bookmarks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ storyId: story._id }),
+            });
+
+            if (!res.ok) {
+                setIsBookmarked(isBookmarked);
+            }
+        } catch (error) {
+            setIsBookmarked(isBookmarked);
+        } finally {
+            setIsBookmarking(false);
+        }
+    };
 
     const handleLike = async () => {
         if (isLiking || !session) return;
@@ -367,8 +393,12 @@ export default function StoryCard({ story, onLike, onDelete }: StoryCardProps) {
                     <span>{story.sharesCount}</span>
                 </button>
 
-                <button style={actionBtnStyle(false, '#d4a54a')}>
-                    <Bookmark style={{ width: '18px', height: '18px' }} />
+                <button
+                    onClick={handleBookmark}
+                    disabled={!session}
+                    style={actionBtnStyle(isBookmarked, '#d4a54a')}
+                >
+                    <Bookmark style={{ width: '18px', height: '18px', fill: isBookmarked ? '#d4a54a' : 'transparent' }} />
                 </button>
             </div>
         </article>

@@ -12,6 +12,10 @@ export interface IStory extends Document {
     sharesCount: number;
     isPublic: boolean;
     tags: string[];
+    // Series/Chapter fields
+    series?: mongoose.Types.ObjectId;
+    chapterNumber?: number;
+    chapterTitle?: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -63,6 +67,19 @@ const StorySchema = new Schema<IStory>(
             lowercase: true,
             trim: true,
         }],
+        // Series/Chapter fields
+        series: {
+            type: Schema.Types.ObjectId,
+            ref: 'Series',
+            index: true,
+        },
+        chapterNumber: {
+            type: Number,
+        },
+        chapterTitle: {
+            type: String,
+            maxlength: 150,
+        },
     },
     {
         timestamps: true,

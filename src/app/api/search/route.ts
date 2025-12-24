@@ -63,6 +63,7 @@ export async function GET(request: Request) {
         if (type === 'all' || type === 'stories') {
             const storiesQuery = {
                 $or: [
+                    { title: { $regex: query, $options: 'i' } },
                     { content: { $regex: query, $options: 'i' } },
                     { tags: { $in: [new RegExp(query, 'i')] } },
                 ],
@@ -70,7 +71,7 @@ export async function GET(request: Request) {
             };
 
             const stories = await Story.find(storiesQuery)
-                .select('_id author content images likesCount commentsCount sharesCount createdAt tags')
+                .select('_id author title content images likesCount commentsCount sharesCount createdAt tags')
                 .populate('author', 'name username avatar isVerified')
                 .sort({ createdAt: -1 })
                 .skip(type === 'stories' ? skip : 0)
