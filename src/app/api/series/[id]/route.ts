@@ -4,14 +4,13 @@ import dbConnect from '@/lib/mongodb';
 import Series from '@/models/Series';
 import Story from '@/models/Story';
 
-interface RouteParams {
-    params: { id: string };
-}
-
 // GET - Get series with chapters
-export async function GET(request: Request, { params }: RouteParams) {
+export async function GET(
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+) {
     try {
-        const { id } = params;
+        const { id } = await params;
 
         await dbConnect();
 
@@ -47,10 +46,13 @@ export async function GET(request: Request, { params }: RouteParams) {
 }
 
 // PUT - Update series
-export async function PUT(request: Request, { params }: RouteParams) {
+export async function PUT(
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+) {
     try {
         const session = await auth();
-        const { id } = params;
+        const { id } = await params;
 
         if (!session?.user?.id) {
             return NextResponse.json(
@@ -107,10 +109,13 @@ export async function PUT(request: Request, { params }: RouteParams) {
 }
 
 // DELETE - Delete series
-export async function DELETE(request: Request, { params }: RouteParams) {
+export async function DELETE(
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+) {
     try {
         const session = await auth();
-        const { id } = params;
+        const { id } = await params;
 
         if (!session?.user?.id) {
             return NextResponse.json(
