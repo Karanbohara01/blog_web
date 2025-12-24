@@ -3,6 +3,10 @@
 import { useResponsive } from '@/hooks/useResponsive';
 
 export default function SideAds() {
+    // DISABLED: Set to false to re-enable sidebar ads
+    const SIDEBAR_ADS_DISABLED = true;
+    if (SIDEBAR_ADS_DISABLED) return null;
+
     const isDev = process.env.NODE_ENV === 'development';
 
     // Development placeholder style
