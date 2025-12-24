@@ -33,8 +33,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
             ? storyData.content.substring(0, 150).trim() + (storyData.content.length > 150 ? '... Read more' : '')
             : 'Read this amazing story on Stories platform';
 
-        // Get the first image or use a default OG image
-        const image = storyData.images?.[0] || 'https://blog-web-five-rose.vercel.app/og-default.png';
+        // Get the first image or use a default OG image (books/reading theme)
+        const image = storyData.images?.[0] || 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&h=630&fit=crop';
         const url = `https://blog-web-five-rose.vercel.app/story/${id}`;
 
         return {
@@ -65,9 +65,30 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         };
     } catch (error) {
         console.error('Error generating metadata:', error);
+        // Return default OG tags even on error
         return {
             title: 'Story - Stories',
             description: 'Read amazing stories on Stories platform',
+            openGraph: {
+                title: '📖 Story',
+                description: 'Read amazing stories on Stories platform',
+                type: 'article',
+                images: [
+                    {
+                        url: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&h=630&fit=crop',
+                        width: 1200,
+                        height: 630,
+                        alt: 'Stories Platform',
+                    },
+                ],
+                siteName: 'Stories - Share Your World',
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title: '📖 Story',
+                description: 'Read amazing stories on Stories platform',
+                images: ['https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&h=630&fit=crop'],
+            },
         };
     }
 }
