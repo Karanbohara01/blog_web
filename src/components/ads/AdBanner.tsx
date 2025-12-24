@@ -1,35 +1,41 @@
 'use client';
 
-import { useResponsive } from '@/hooks/useResponsive';
+import React, { useEffect, useState } from 'react';
 
 export default function AdBanner() {
-    const { isMobile } = useResponsive();
+    const [mounted, setMounted] = useState(false);
 
-    // 728x90 is too wide for mobile devices
-    if (isMobile) {
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
         return null;
     }
 
     return (
-        <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            margin: '20px 0',
-            width: '100%',
-            overflow: 'hidden'
-        }}>
-            <iframe
-                src="/ads/banner_728x90.html"
-                width="728"
-                height="90"
-                style={{
-                    border: 'none',
-                    overflow: 'hidden',
-                    maxWidth: '100%'
-                }}
-                title="Advertisement"
-                scrolling="no"
-            />
+        <div className="w-full flex justify-center my-8">
+            {/* Desktop Ad (728x90) - Hidden on mobile */}
+            <div className="hidden md:block">
+                <iframe
+                    src="/ads/banner_728x90.html"
+                    width="730"
+                    height="92"
+                    style={{ border: 'none', overflow: 'hidden' }}
+                    title="Advertisement"
+                />
+            </div>
+
+            {/* Mobile Ad (Native Banner) - Hidden on desktop */}
+            <div className="block md:hidden w-full px-4">
+                <iframe
+                    src="/ads/native_banner.html"
+                    width="100%"
+                    height="300" // Adjustable height for 1:4 layout
+                    style={{ border: 'none', overflow: 'hidden', minHeight: '300px' }}
+                    title="Advertisement"
+                />
+            </div>
         </div>
     );
 }
