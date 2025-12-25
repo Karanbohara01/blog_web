@@ -17,7 +17,7 @@ export default function AdBanner() {
     // Show placeholder in development
     if (isDev) {
         return (
-            <div className="w-full flex justify-center my-4">
+            <div className="w-full flex justify-center my-4 mt-20">
                 {/* Desktop Placeholder */}
                 <div className="hidden md:flex" style={{
                     width: '728px',

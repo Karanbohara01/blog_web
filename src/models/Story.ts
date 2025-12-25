@@ -1,5 +1,16 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
+// Reaction types
+export type ReactionType = 'love' | 'laugh' | 'sad' | 'fire' | 'clap';
+
+export interface IReactions {
+    love: mongoose.Types.ObjectId[];
+    laugh: mongoose.Types.ObjectId[];
+    sad: mongoose.Types.ObjectId[];
+    fire: mongoose.Types.ObjectId[];
+    clap: mongoose.Types.ObjectId[];
+}
+
 export interface IStory extends Document {
     _id: mongoose.Types.ObjectId;
     author: mongoose.Types.ObjectId;
@@ -8,6 +19,8 @@ export interface IStory extends Document {
     images: string[];
     likes: mongoose.Types.ObjectId[];
     likesCount: number;
+    reactions: IReactions;
+    reactionsCount: number;
     commentsCount: number;
     sharesCount: number;
     isPublic: boolean;
@@ -46,6 +59,17 @@ const StorySchema = new Schema<IStory>(
             ref: 'User',
         }],
         likesCount: {
+            type: Number,
+            default: 0,
+        },
+        reactions: {
+            love: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+            laugh: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+            sad: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+            fire: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+            clap: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+        },
+        reactionsCount: {
             type: Number,
             default: 0,
         },

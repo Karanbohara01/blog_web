@@ -47,9 +47,54 @@ export default function StoryCard({ story, onLike, onDelete }: StoryCardProps) {
     const [isLiking, setIsLiking] = useState(false);
     const [isBookmarking, setIsBookmarking] = useState(false);
 
+    // Reaction state
+    const [showReactions, setShowReactions] = useState(false);
+    const [userReaction, setUserReaction] = useState<string | null>(null);
+    const [reactionsCount, setReactionsCount] = useState(0);
+    const [isReacting, setIsReacting] = useState(false);
+
+    const REACTIONS = [
+        { type: 'love', emoji: '❤️', label: 'Love' },
+        { type: 'laugh', emoji: '😂', label: 'Haha' },
+        { type: 'sad', emoji: '😢', label: 'Sad' },
+        { type: 'fire', emoji: '🔥', label: 'Fire' },
+        { type: 'clap', emoji: '👏', label: 'Clap' },
+    ];
+
     const readTime = getReadTime(story.content);
 
     const isAuthor = session?.user?.id === story.author._id;
+
+    const handleReaction = async (reactionType: string) => {
+        if (isReacting || !session) return;
+
+        setIsReacting(true);
+        setShowReactions(false);
+
+        // Optimistic update
+        const wasReacted = userReaction === reactionType;
+        setUserReaction(wasReacted ? null : reactionType);
+        setReactionsCount(prev => wasReacted ? prev - 1 : (userReaction ? prev : prev + 1));
+
+        try {
+            const res = await fetch(`/api/stories/${story._id}/react`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reactionType }),
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setUserReaction(data.userReaction);
+                setReactionsCount(data.totalReactions);
+            }
+        } catch (error) {
+            // Revert on error
+            setUserReaction(userReaction);
+        } finally {
+            setIsReacting(false);
+        }
+    };
 
     const handleBookmark = async () => {
         if (isBookmarking || !session) return;
@@ -399,6 +444,63 @@ export default function StoryCard({ story, onLike, onDelete }: StoryCardProps) {
                     <Heart style={{ width: '18px', height: '18px', fill: isLiked ? '#f87171' : 'transparent' }} />
                     <span>{likesCount}</span>
                 </button>
+
+                {/* Reaction Button with Picker */}
+                <div style={{ position: 'relative' }}>
+                    <button
+                        onClick={() => session && setShowReactions(!showReactions)}
+                        disabled={!session}
+                        style={{
+                            ...actionBtnStyle(!!userReaction, '#fbbf24'),
+                            fontSize: userReaction ? '18px' : '14px',
+                        }}
+                    >
+                        {userReaction
+                            ? REACTIONS.find(r => r.type === userReaction)?.emoji
+                            : '😊'}
+                        {reactionsCount > 0 && <span style={{ marginLeft: '4px' }}>{reactionsCount}</span>}
+                    </button>
+
+                    {/* Emoji Picker Popup */}
+                    {showReactions && (
+                        <div style={{
+                            position: 'absolute',
+                            bottom: '100%',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            marginBottom: '8px',
+                            background: '#1a1a1a',
+                            border: '1px solid #333',
+                            borderRadius: '24px',
+                            padding: '8px 12px',
+                            display: 'flex',
+                            gap: '8px',
+                            boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+                            zIndex: 50,
+                        }}>
+                            {REACTIONS.map(reaction => (
+                                <button
+                                    key={reaction.type}
+                                    onClick={() => handleReaction(reaction.type)}
+                                    title={reaction.label}
+                                    style={{
+                                        background: userReaction === reaction.type ? 'rgba(251, 191, 36, 0.2)' : 'transparent',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        padding: '8px',
+                                        fontSize: '24px',
+                                        cursor: 'pointer',
+                                        transition: 'transform 0.2s, background 0.2s',
+                                    }}
+                                    onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.3)')}
+                                    onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                                >
+                                    {reaction.emoji}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
 
                 <Link
                     href={`/story/${story._id}`}
