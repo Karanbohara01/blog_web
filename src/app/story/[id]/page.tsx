@@ -5,9 +5,16 @@ import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
-import { Heart, MessageCircle, Share2, Bookmark, ArrowLeft, Send, Loader2, ThumbsUp } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Bookmark, ArrowLeft, Send, Loader2, ThumbsUp, Clock } from 'lucide-react';
 import { useResponsive } from '@/hooks/useResponsive';
 import AdBanner from '@/components/ads/AdBanner';
+
+// Calculate estimated read time (average 200 words per minute)
+const getReadTime = (content: string): string => {
+    const words = content.trim().split(/\s+/).length;
+    const minutes = Math.ceil(words / 200);
+    return minutes <= 1 ? '1 min read' : `${minutes} min read`;
+};
 
 interface Story {
     _id: string;
@@ -248,8 +255,12 @@ export default function StoryPage() {
                             </div>
                             <p style={{ fontSize: '14px', color: '#666', margin: '2px 0 0' }}>@{story.author.username}</p>
                         </Link>
-                        <p style={{ fontSize: '13px', color: '#555', marginTop: '4px' }}>
-                            {formatDistanceToNow(new Date(story.createdAt), { addSuffix: true })}
+                        <p style={{ fontSize: '13px', color: '#555', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <span>{formatDistanceToNow(new Date(story.createdAt), { addSuffix: true })}</span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#888' }}>
+                                <Clock style={{ width: '14px', height: '14px' }} />
+                                {getReadTime(story.content)}
+                            </span>
                         </p>
                     </div>
                 </div>

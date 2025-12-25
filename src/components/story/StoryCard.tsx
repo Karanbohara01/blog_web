@@ -3,8 +3,15 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
-import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal, Trash2, Edit2 } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal, Trash2, Edit2, Clock } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+
+// Calculate estimated read time (average 200 words per minute)
+const getReadTime = (content: string): string => {
+    const words = content.trim().split(/\s+/).length;
+    const minutes = Math.ceil(words / 200);
+    return minutes <= 1 ? '1 min read' : `${minutes} min read`;
+};
 
 interface StoryCardProps {
     story: {
@@ -39,6 +46,8 @@ export default function StoryCard({ story, onLike, onDelete }: StoryCardProps) {
     const [showMenu, setShowMenu] = useState(false);
     const [isLiking, setIsLiking] = useState(false);
     const [isBookmarking, setIsBookmarking] = useState(false);
+
+    const readTime = getReadTime(story.content);
 
     const isAuthor = session?.user?.id === story.author._id;
 
@@ -186,6 +195,17 @@ export default function StoryCard({ story, onLike, onDelete }: StoryCardProps) {
                         </div>
                         <span style={{ fontSize: '13px', color: '#666' }}>
                             @{story.author.username} · {formatDistanceToNow(new Date(story.createdAt), { addSuffix: true })}
+                        </span>
+                        <span style={{
+                            fontSize: '12px',
+                            color: '#888',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            marginTop: '2px'
+                        }}>
+                            <Clock style={{ width: '12px', height: '12px' }} />
+                            {readTime}
                         </span>
                     </div>
                 </Link>
