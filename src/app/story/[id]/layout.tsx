@@ -41,8 +41,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
             title: `${title} by ${author} - Stories`,
             description: contentTeaser,
             openGraph: {
-                title: `📖 ${title}`,
-                description: `${contentTeaser}\n\n👤 By ${author}`,
+                title: title,
+                description: `${contentTeaser}\n\nBy ${author}`,
                 type: 'article',
                 url: url,
                 images: [
@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
             },
             twitter: {
                 card: 'summary_large_image',
-                title: `📖 ${title}`,
+                title: title,
                 description: contentTeaser,
                 images: [image],
             },
@@ -70,7 +70,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
             title: 'Story - Stories',
             description: 'Read amazing stories on Stories platform',
             openGraph: {
-                title: '📖 Story',
+                title: 'Story',
                 description: 'Read amazing stories on Stories platform',
                 type: 'article',
                 images: [
@@ -85,7 +85,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
             },
             twitter: {
                 card: 'summary_large_image',
-                title: '📖 Story',
+                title: 'Story',
                 description: 'Read amazing stories on Stories platform',
                 images: ['https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&h=630&fit=crop'],
             },
