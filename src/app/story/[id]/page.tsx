@@ -8,6 +8,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Heart, MessageCircle, Share2, Bookmark, ArrowLeft, Send, Loader2, ThumbsUp, Clock } from 'lucide-react';
 import { useResponsive } from '@/hooks/useResponsive';
 import AdBanner from '@/components/ads/AdBanner';
+import ShareButtons from '@/components/ShareButtons';
 
 // Calculate estimated read time (average 200 words per minute)
 const getReadTime = (content: string): string => {
@@ -404,6 +405,28 @@ export default function StoryPage() {
                     </button>
                 </div>
             </article>
+
+            {/* Share Section */}
+            <div style={{
+                ...cardStyle,
+                marginTop: '16px',
+                padding: '20px',
+            }}>
+                <h3 style={{
+                    fontSize: '16px',
+                    fontWeight: 600,
+                    color: '#fff',
+                    marginBottom: '16px'
+                }}>
+                    Share this story
+                </h3>
+                <ShareButtons
+                    url={typeof window !== 'undefined' ? window.location.href : `${process.env.NEXT_PUBLIC_APP_URL}/story/${story._id}`}
+                    title={story.title || 'Amazing Story'}
+                    description={story.content.slice(0, 150)}
+                />
+            </div>
+
             <AdBanner />
             {/* Comments Section */}
             <div style={{ ...cardStyle, marginTop: '16px' }}>
