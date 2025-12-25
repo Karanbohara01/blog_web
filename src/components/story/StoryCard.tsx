@@ -186,6 +186,7 @@ export default function StoryCard({ story, onLike, onDelete }: StoryCardProps) {
         border: '1px solid #222',
         borderRadius: '16px',
         padding: '20px',
+        marginBottom: '8px',
     };
 
     const actionBtnStyle = (active: boolean, color: string) => ({
