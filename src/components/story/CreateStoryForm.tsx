@@ -14,6 +14,7 @@ export default function CreateStoryForm() {
     const [images, setImages] = useState<string[]>([]);
     const [tags, setTags] = useState<string[]>([]);
     const [tagInput, setTagInput] = useState('');
+    const [telegramLink, setTelegramLink] = useState('');
     const [uploading, setUploading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
@@ -108,6 +109,7 @@ export default function CreateStoryForm() {
                     content: content.trim(),
                     images,
                     tags,
+                    telegramLink: telegramLink.trim() || undefined,
                 }),
             });
 
@@ -289,6 +291,26 @@ export default function CreateStoryForm() {
                 </div>
                 <div style={{ fontSize: '12px', color: '#555', marginTop: '8px' }}>
                     {tags.length}/10 tags • Helps readers discover your story
+                </div>
+            </div>
+
+            {/* Telegram Link Input */}
+            <div style={{ ...cardStyle, padding: '20px', marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '13px', color: '#888', marginBottom: '8px', fontWeight: 500 }}>
+                    Telegram Group/Channel Link (optional)
+                </label>
+                <input
+                    type="url"
+                    value={telegramLink}
+                    onChange={(e) => setTelegramLink(e.target.value)}
+                    placeholder="https://t.me/yourgroup"
+                    style={{
+                        ...inputStyle,
+                        padding: '8px 0',
+                    }}
+                />
+                <div style={{ fontSize: '12px', color: '#555', marginTop: '8px' }}>
+                    📱 Add your Telegram group or channel link for readers to join
                 </div>
             </div>
 

@@ -102,7 +102,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const { title, content, images, tags, isPublic } = await request.json();
+        const { title, content, images, tags, isPublic, telegramLink } = await request.json();
 
         if (!title || title.trim().length === 0) {
             return NextResponse.json(
@@ -134,6 +134,7 @@ export async function POST(request: Request) {
             images: images || [],
             tags: tags || [],
             isPublic: isPublic !== false,
+            telegramLink: telegramLink?.trim() || undefined,
         });
 
         // Update user's story count

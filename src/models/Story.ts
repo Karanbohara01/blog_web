@@ -17,6 +17,7 @@ export interface IStory extends Document {
     title: string;
     content: string;
     images: string[];
+    telegramLink?: string;
     likes: mongoose.Types.ObjectId[];
     likesCount: number;
     reactions: IReactions;
@@ -54,6 +55,10 @@ const StorySchema = new Schema<IStory>(
         images: [{
             type: String,
         }],
+        telegramLink: {
+            type: String,
+            trim: true,
+        },
         likes: [{
             type: Schema.Types.ObjectId,
             ref: 'User',
