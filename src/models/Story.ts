@@ -11,6 +11,9 @@ export interface IReactions {
     clap: mongoose.Types.ObjectId[];
 }
 
+// Content rating for adult content
+export type ContentRating = 'safe' | 'mature' | 'explicit';
+
 export interface IStory extends Document {
     _id: mongoose.Types.ObjectId;
     author: mongoose.Types.ObjectId;
@@ -18,6 +21,7 @@ export interface IStory extends Document {
     content: string;
     images: string[];
     telegramLink?: string;
+    contentRating: ContentRating;
     likes: mongoose.Types.ObjectId[];
     likesCount: number;
     reactions: IReactions;
@@ -58,6 +62,11 @@ const StorySchema = new Schema<IStory>(
         telegramLink: {
             type: String,
             trim: true,
+        },
+        contentRating: {
+            type: String,
+            enum: ['safe', 'mature', 'explicit'],
+            default: 'safe',
         },
         likes: [{
             type: Schema.Types.ObjectId,

@@ -104,7 +104,7 @@ export default function HomePage() {
       padding: isMobile ? '16px' : '24px'
     }}>
       <AdBanner />
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }} className="lg:!grid-cols-[2fr_1fr]">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }} className="lg:!grid-cols-[2fr_1fr] mb-20">
         {/* Main Feed */}
         <div>
           {/* Create Story CTA */}

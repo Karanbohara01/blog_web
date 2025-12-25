@@ -27,6 +27,7 @@ interface StoryCardProps {
         content: string;
         images: string[];
         tags?: string[];
+        contentRating?: 'safe' | 'mature' | 'explicit';
         likesCount: number;
         commentsCount: number;
         sharesCount: number;
@@ -60,6 +61,10 @@ export default function StoryCard({ story, onLike, onDelete }: StoryCardProps) {
         { type: 'fire', emoji: '🔥', label: 'Fire' },
         { type: 'clap', emoji: '👏', label: 'Clap' },
     ];
+
+    // NSFW blur state
+    const [blurRevealed, setBlurRevealed] = useState(false);
+    const isAdultContent = story.contentRating === 'mature' || story.contentRating === 'explicit';
 
     const readTime = getReadTime(story.content);
 
@@ -353,6 +358,29 @@ export default function StoryCard({ story, onLike, onDelete }: StoryCardProps) {
 
             {/* Content */}
             <Link href={`/story/${story._id}`} style={{ textDecoration: 'none' }}>
+                {/* Rating Badge */}
+                {isAdultContent && (
+                    <div style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '4px 10px',
+                        borderRadius: '6px',
+                        background: story.contentRating === 'explicit' ? 'rgba(248, 113, 113, 0.2)' : 'rgba(251, 191, 36, 0.2)',
+                        border: `1px solid ${story.contentRating === 'explicit' ? '#f87171' : '#fbbf24'}`,
+                        marginBottom: '10px',
+                    }}>
+                        <span style={{ fontSize: '12px' }}>{story.contentRating === 'explicit' ? '🔥' : '🔞'}</span>
+                        <span style={{
+                            fontSize: '11px',
+                            fontWeight: 600,
+                            color: story.contentRating === 'explicit' ? '#f87171' : '#fbbf24',
+                            textTransform: 'uppercase',
+                        }}>
+                            {story.contentRating} (18+)
+                        </span>
+                    </div>
+                )}
                 {/* Title */}
                 {story.title && (
                     <h3 style={{

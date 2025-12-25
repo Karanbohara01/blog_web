@@ -15,6 +15,7 @@ export default function CreateStoryForm() {
     const [tags, setTags] = useState<string[]>([]);
     const [tagInput, setTagInput] = useState('');
     const [telegramLink, setTelegramLink] = useState('');
+    const [contentRating, setContentRating] = useState<'safe' | 'mature' | 'explicit'>('safe');
     const [uploading, setUploading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
@@ -110,6 +111,7 @@ export default function CreateStoryForm() {
                     images,
                     tags,
                     telegramLink: telegramLink.trim() || undefined,
+                    contentRating,
                 }),
             });
 
@@ -311,6 +313,77 @@ export default function CreateStoryForm() {
                 />
                 <div style={{ fontSize: '12px', color: '#555', marginTop: '8px' }}>
                     📱 Add your Telegram group or channel link for readers to join
+                </div>
+            </div>
+
+            {/* Content Rating Selector */}
+            <div style={{ ...cardStyle, padding: '20px', marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '13px', color: '#888', marginBottom: '12px', fontWeight: 500 }}>
+                    Content Rating <span style={{ color: '#ff6b6b' }}>*</span>
+                </label>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    <button
+                        type="button"
+                        onClick={() => setContentRating('safe')}
+                        style={{
+                            flex: 1,
+                            minWidth: '100px',
+                            padding: '12px 16px',
+                            borderRadius: '10px',
+                            border: contentRating === 'safe' ? '2px solid #4ade80' : '1px solid #333',
+                            background: contentRating === 'safe' ? 'rgba(74, 222, 128, 0.1)' : '#1a1a1a',
+                            color: contentRating === 'safe' ? '#4ade80' : '#888',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                        }}
+                    >
+                        ✅ Safe
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setContentRating('mature')}
+                        style={{
+                            flex: 1,
+                            minWidth: '100px',
+                            padding: '12px 16px',
+                            borderRadius: '10px',
+                            border: contentRating === 'mature' ? '2px solid #fbbf24' : '1px solid #333',
+                            background: contentRating === 'mature' ? 'rgba(251, 191, 36, 0.1)' : '#1a1a1a',
+                            color: contentRating === 'mature' ? '#fbbf24' : '#888',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                        }}
+                    >
+                        🔞 Mature (18+)
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setContentRating('explicit')}
+                        style={{
+                            flex: 1,
+                            minWidth: '100px',
+                            padding: '12px 16px',
+                            borderRadius: '10px',
+                            border: contentRating === 'explicit' ? '2px solid #f87171' : '1px solid #333',
+                            background: contentRating === 'explicit' ? 'rgba(248, 113, 113, 0.1)' : '#1a1a1a',
+                            color: contentRating === 'explicit' ? '#f87171' : '#888',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                        }}
+                    >
+                        🔥 Explicit (18+)
+                    </button>
+                </div>
+                <div style={{ fontSize: '12px', color: '#555', marginTop: '10px' }}>
+                    {contentRating === 'safe' && '✅ Suitable for all ages'}
+                    {contentRating === 'mature' && '🔞 Contains adult themes - viewers must be 18+'}
+                    {contentRating === 'explicit' && '🔥 Contains explicit adult content - viewers must be 18+'}
                 </div>
             </div>
 

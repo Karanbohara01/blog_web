@@ -6,6 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import { NotificationProvider } from "@/contexts/SocketContext";
 import SocialBar from "@/components/ads/SocialBar";
 import SideAds from "@/components/ads/SideAds";
+import AgeVerificationModal from "@/components/AgeVerificationModal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <NotificationProvider>
+            <AgeVerificationModal />
             <Navbar />
             <SideAds />
             <main className="pt-20 min-h-screen">
