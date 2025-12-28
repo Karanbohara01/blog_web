@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { ImagePlus, X, Loader2, Send, Plus } from 'lucide-react';
 import { useResponsive } from '@/hooks/useResponsive';
+import VideoEmbed from '@/components/VideoEmbed';
 
 export default function CreateStoryForm() {
     const { data: session } = useSession();
@@ -16,6 +17,7 @@ export default function CreateStoryForm() {
     const [tagInput, setTagInput] = useState('');
     const [telegramLink, setTelegramLink] = useState('');
     const [contentRating, setContentRating] = useState<'safe' | 'mature' | 'explicit'>('safe');
+    const [videoUrl, setVideoUrl] = useState('');
     const [uploading, setUploading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
@@ -112,6 +114,7 @@ export default function CreateStoryForm() {
                     tags,
                     telegramLink: telegramLink.trim() || undefined,
                     contentRating,
+                    videoUrl: videoUrl.trim() || undefined,
                 }),
             });
 
@@ -314,6 +317,32 @@ export default function CreateStoryForm() {
                 <div style={{ fontSize: '12px', color: '#555', marginTop: '8px' }}>
                     📱 Add your Telegram group or channel link for readers to join
                 </div>
+            </div>
+
+            {/* Video URL Input */}
+            <div style={{ ...cardStyle, padding: '20px', marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '13px', color: '#888', marginBottom: '8px', fontWeight: 500 }}>
+                    Video URL (YouTube/Vimeo - optional)
+                </label>
+                <input
+                    type="url"
+                    value={videoUrl}
+                    onChange={(e) => setVideoUrl(e.target.value)}
+                    placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/..."
+                    style={{
+                        ...inputStyle,
+                        padding: '8px 0',
+                    }}
+                />
+                <div style={{ fontSize: '12px', color: '#555', marginTop: '8px' }}>
+                    🎬 Embed YouTube, Vimeo, or major adult tube sites (Pornhub, XVideos, RedTube, etc.)
+                </div>
+                {/* Video Preview */}
+                {videoUrl.trim() && (
+                    <div style={{ marginTop: '16px' }}>
+                        <VideoEmbed url={videoUrl} />
+                    </div>
+                )}
             </div>
 
             {/* Content Rating Selector */}

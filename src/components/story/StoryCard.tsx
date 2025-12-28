@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal, Trash2, Edit2, Clock } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import VideoEmbed from '@/components/VideoEmbed';
 
 // Calculate estimated read time (average 200 words per minute)
 const getReadTime = (content: string): string => {
@@ -26,6 +27,7 @@ interface StoryCardProps {
         title?: string;
         content: string;
         images: string[];
+        videoUrl?: string;
         tags?: string[];
         contentRating?: 'safe' | 'mature' | 'explicit';
         likesCount: number;
@@ -428,6 +430,13 @@ export default function StoryCard({ story, onLike, onDelete }: StoryCardProps) {
                     )}
                 </p>
             </Link>
+
+            {/* Video Embed */}
+            {story.videoUrl && (
+                <div style={{ marginBottom: '16px' }}>
+                    <VideoEmbed url={story.videoUrl} />
+                </div>
+            )}
 
             {/* Images */}
             {story.images.length > 0 && (

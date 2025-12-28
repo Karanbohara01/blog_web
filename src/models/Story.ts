@@ -20,6 +20,7 @@ export interface IStory extends Document {
     title: string;
     content: string;
     images: string[];
+    videoUrl?: string;
     telegramLink?: string;
     contentRating: ContentRating;
     likes: mongoose.Types.ObjectId[];
@@ -59,6 +60,10 @@ const StorySchema = new Schema<IStory>(
         images: [{
             type: String,
         }],
+        videoUrl: {
+            type: String,
+            trim: true,
+        },
         telegramLink: {
             type: String,
             trim: true,

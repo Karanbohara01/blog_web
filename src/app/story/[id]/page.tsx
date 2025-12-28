@@ -9,6 +9,7 @@ import { Heart, MessageCircle, Share2, Bookmark, ArrowLeft, Send, Loader2, Thumb
 import { useResponsive } from '@/hooks/useResponsive';
 import AdBanner from '@/components/ads/AdBanner';
 import ShareButtons from '@/components/ShareButtons';
+import VideoEmbed from '@/components/VideoEmbed';
 
 // Calculate estimated read time (average 200 words per minute)
 const getReadTime = (content: string): string => {
@@ -31,6 +32,7 @@ interface Story {
     title?: string;
     content: string;
     images: string[];
+    videoUrl?: string;
     tags?: string[];
     telegramLink?: string;
     likesCount: number;
@@ -332,6 +334,13 @@ export default function StoryPage() {
 
                     return <>{elements}</>;
                 })()}
+
+                {/* Video Embed */}
+                {story.videoUrl && (
+                    <div style={{ marginBottom: '20px' }}>
+                        <VideoEmbed url={story.videoUrl} />
+                    </div>
+                )}
 
                 {/* Images */}
                 {story.images.length > 0 && (
